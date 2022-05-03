@@ -3,6 +3,9 @@
 const express = require('express')
 const app = express()
 
+// DataBase (connection to MongoDB)
+require('./database/connection')()
+
 // middleware
 require('./middlewares')(app, express)
 
