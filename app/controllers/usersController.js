@@ -4,7 +4,16 @@ const userModel = require('../models/userModel')
 
 const usersList = async (req, res, next) => {
     try {
-        const users = await userModel.find({})
+        let projection = {}
+        if (req.query.hasOwnProperty("fields")) {
+            projection = req.query.fields.split(',').reduce((total, current) => {
+                return {
+                    [current]: 1,
+                    ...total
+                }
+            },{})
+        }
+        const users = await userModel.find({}, projection)
         const countOfUserList = await userModel.count()
         res.status(200).send({
             successes: true,
