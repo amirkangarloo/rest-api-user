@@ -46,7 +46,33 @@ const addUser = async (req, res, next) => {
     }
 }
 
+const getUser = async (req, res, next) => {
+    try {
+        let projection = {}
+        if (req.query.hasOwnProperty("fields")) {
+            projection = req.query.fields.split(',').reduce((total, current) => {
+                return {
+                    [current]: 1,
+                    ...total
+                }
+            },{})
+        }
+        const {id} = req.params
+        const user = await userModel.findById(id, projection)
+        if (!user) {
+            return next()
+        }
+        res.status(200).send({
+            successes: true,
+            user
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     usersList,
-    addUser
+    addUser,
+    getUser
 }
