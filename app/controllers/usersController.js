@@ -88,8 +88,35 @@ const getUser = async (req, res, next) => {
     }
 }
 
+const deleteUser = async (req, res, next) => {
+    try {
+        // Find user
+        const {id} = req.params
+        const user = await userModel.findByIdAndDelete(id)
+
+        // The user id is not valid
+        if (!user) {
+            return res.status(404).send({
+                code: 'Not found',
+                status: 404,
+                message: 'requested resource could not be found!'
+            })
+        }
+
+        // The user id is valid
+        res.status(202).send({
+            successes: true,
+            message: `User with userID: (${user._id}) deleted.`
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     usersList,
     addUser,
-    getUser
+    getUser,
+    deleteUser
 }

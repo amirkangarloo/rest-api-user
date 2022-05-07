@@ -5,13 +5,15 @@ const router = express.Router()
 const {
     usersList,
     addUser,
-    getUser
+    getUser,
+    deleteUser
 } = require('../controllers/usersController')
 const methodNotAllowed = require('../middlewares/405')
 
 router.get('/', usersList)
 router.post('/', addUser)
 router.get('/:id', getUser)
+router.delete('/:id', deleteUser)
 
 // Method Not Allowed (405 Error)
 router.all('/', methodNotAllowed)
