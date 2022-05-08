@@ -8,9 +8,11 @@ const sing = (data) => {
 
 const verify = (token) => {
     try {
-        jwt.verify(token, process.env.APP_SECRET)        
+        jwt.verify(token, process.env.APP_SECRET)
+        // if token is valid        
         return true
     } catch (error) {
+        // if token is valid
         return false
     }
 }

@@ -10,7 +10,8 @@ module.exports = (req, res, next) => {
             message: "You are not authorized!"
         })
     }
-    const token = req.headers.authorization
+    // split Bearer and token
+    const [,token] = req.headers.authorization.split(' ')
     const validaion = tokenService.verify(token)
     if (!validaion) {
         return res.status(401).send({

@@ -10,12 +10,13 @@ const {
     updateUser
 } = require('../controllers/usersController')
 const methodNotAllowed = require('../middlewares/405')
+const auth = require('../middlewares/auth')
 
-router.get('/', usersList)
+router.get('/', [auth], usersList)
 router.post('/', addUser)
 router.get('/:id', getUser)
-router.delete('/:id', deleteUser)
-router.patch('/:id', updateUser)
+router.delete('/:id', [auth], deleteUser)
+router.patch('/:id', [auth], updateUser)
 
 // Method Not Allowed (405 Error)
 router.all('/', methodNotAllowed)
