@@ -15,16 +15,56 @@ const usersList = async (req, res, next) => {
             },{})
         }
         
-        // Find users
-        const users = await userModel.find({}, projection)
-
         // The number of users
         const countOfUserList = await userModel.count()
+
+        // pagination
+        const perPage = 1
+        const page = req.query.page || 1
+        const offset = (page - 1) * perPage
+        const totalPages = Math.ceil(countOfUserList / perPage)
+
+        // request for pages upper than total pages
+        if (page > totalPages) {
+            return res.status(404).send({
+                code: 'Not found',
+                status: 404,
+                message: 'requested resource could not be found!'
+            })
+        }
         
+        const nextPageUrl = () => {
+            if (!(hasNextPage(page, totalPages))) {
+                return null
+            }
+            if (!(req.query.hasOwnProperty("fields"))) {
+                return `${process.env.APP_URL}/api/v1/users?page=${parseInt(page) + 1}`
+            }
+            return `${process.env.APP_URL}/api/v1/users?fields=${req.query.fields}&page=${parseInt(page) + 1}`
+        }
+        
+        const prevPageUrl = () => {
+            if (!(hasPrevPage(page))) {
+                return null
+            }
+            if (!(req.query.hasOwnProperty("fields"))) {
+                return `${process.env.APP_URL}/api/v1/users?page=${parseInt(page) - 1}`
+            }
+            return `${process.env.APP_URL}/api/v1/users?fields=${req.query.fields}&page=${parseInt(page) - 1}`
+        }
+        
+        // Find users
+        const users = await userModel.find({}, projection).limit(perPage).skip(offset)
+
         res.status(200).send({
             successes: true,
             message: `The users list has ${countOfUserList} user`,
-            users
+            users,
+            meta: {
+                "total result": countOfUserList,
+                next: nextPageUrl(),
+                perv: prevPageUrl()
+            }
         })
     } catch (error) {
         next(error)
@@ -146,4 +186,14 @@ module.exports = {
     getUser,
     deleteUser,
     updateUser
+}
+
+// pagination methods
+
+const hasNextPage = (page, totalPages) => {
+    return page < totalPages
+}
+
+const hasPrevPage = (page) => {
+    return page > 1
 }
