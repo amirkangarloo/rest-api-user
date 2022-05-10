@@ -3,10 +3,26 @@
 const mongoos = require('mongoose')
 
 const userSchema = new mongoos.Schema({
-    first_name: String,
-    last_name: String,
-    mobile: String,
-    email: String,
+    first_name: {
+        type: String,
+        required: true
+    },
+    last_name: {
+        type: String,
+        required: true
+    },
+    mobile: {
+        type: String,
+        required: true,
+        unique: true,
+        match: /^09[0-9]{9}$/
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    },
     wallet: {
         type: Number,
         default: 0
