@@ -1,5 +1,5 @@
 # REST API with NodeJs & Express
-REST API for a user with Node, Express &amp; MongoDB. In this project, I use MVC.
+REST API for a user with Node, Express &amp; MongoDB. In this project, use MVC architectural pattern.
 
 ## REST API
 
